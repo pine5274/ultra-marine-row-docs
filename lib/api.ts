@@ -21,6 +21,9 @@ export const fetchCategories = async () => {
     modelUid: process.env.NEXT_PUBLIC_NEWT_CATEGORY_MODEL_UID,
     query: {
       depth: 1,
+      order: ["sortOrder"],
+      select: ["_id", "name"],
+      limit: 1000,
     },
   });
   return items;
@@ -34,7 +37,7 @@ export const fetchArticles = async (options?: {
   limit?: number;
   format?: string;
 }) => {
-  const { query, search, category, page, limit, format } = options || {};
+  const { query, search, category } = options || {};
   const _query = {
     ...(query || {}),
   };
@@ -55,9 +58,7 @@ export const fetchArticles = async (options?: {
   if (category) {
     _query.categories = category;
   }
-  const _page = page || 1;
-  const _limit = limit || Number(process.env.NEXT_PUBLIC_PAGE_LIMIT) || 10;
-  const _skip = (_page - 1) * _limit;
+  const _limit = 1000;
 
   const { items, total } = await client.getContents<Content & Article>({
     appUid: process.env.NEXT_PUBLIC_NEWT_APP_UID,
@@ -65,7 +66,8 @@ export const fetchArticles = async (options?: {
     query: {
       depth: 2,
       limit: _limit,
-      skip: _skip,
+      order: ["sortOrder"],
+      select: ["title", "category", "slug", "body"],
       ..._query,
     },
   });
@@ -73,18 +75,6 @@ export const fetchArticles = async (options?: {
     articles: items,
     total,
   };
-};
-
-export const getPages = async (options?: { category?: string }) => {
-  const { total } = await fetchArticles(options);
-  const pages = Array(
-    Math.ceil(total / Number(process.env.NEXT_PUBLIC_PAGE_LIMIT) || 10)
-  )
-    .fill(true)
-    .map((value, index) => ({
-      number: index + 1,
-    }));
-  return pages;
 };
 
 export const fetchCurrentArticle = async (options: { slug: string }) => {

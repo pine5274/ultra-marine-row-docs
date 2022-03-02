@@ -1,20 +1,35 @@
-import { fetchApp, fetchArticles, fetchCategories } from "../lib/api";
-import { Home, HomeProps } from "../components/Home";
+import { fetchArticles, fetchCategories } from "../lib/api";
+import { Redirect } from "next";
 
-export default function TopPage(props: HomeProps) {
-  return <Home {...props} />;
+export default function TopPage() {
+  return <></>;
 }
 
-export async function getStaticProps(): Promise<{ props: HomeProps }> {
-  const app = await fetchApp();
+export async function getStaticProps(): Promise<{
+  redirect?: Redirect;
+  notFound?: boolean;
+}> {
   const categories = await fetchCategories();
-  const { articles, total } = await fetchArticles();
+  if (categories.length === 0) {
+    return {
+      notFound: true,
+    };
+  }
+  const { articles } = await fetchArticles();
+  const topArticle = articles.find(
+    (article) => article.category._id === categories[0]._id
+  );
+
+  if (!topArticle) {
+    return {
+      notFound: true,
+    };
+  }
+
   return {
-    props: {
-      app,
-      categories,
-      articles,
-      total,
+    redirect: {
+      destination: `/article/${topArticle.slug}`,
+      statusCode: 302,
     },
   };
 }
