@@ -1,14 +1,18 @@
 import { fetchArticles, fetchCategories } from "../lib/api";
-import { Redirect } from "next";
+import { useEffect } from "react";
+import { useRouter } from "next/router";
 
-export default function TopPage() {
+export default function TopPage({ slug }: { slug: string }) {
+  const router = useRouter();
+  useEffect(() => {
+    if (slug) {
+      router.replace(`/article/${slug}`);
+    }
+  }, [router]);
   return <></>;
 }
 
-export async function getStaticProps(): Promise<{
-  redirect?: Redirect;
-  notFound?: boolean;
-}> {
+export async function getStaticProps() {
   const categories = await fetchCategories();
   if (categories.length === 0) {
     return {
@@ -19,7 +23,6 @@ export async function getStaticProps(): Promise<{
   const topArticle = articles.find(
     (article) => article.category._id === categories[0]._id
   );
-
   if (!topArticle) {
     return {
       notFound: true,
@@ -27,9 +30,8 @@ export async function getStaticProps(): Promise<{
   }
 
   return {
-    redirect: {
-      destination: `/article/${topArticle.slug}`,
-      statusCode: 302,
+    props: {
+      slug: topArticle.slug,
     },
   };
 }
