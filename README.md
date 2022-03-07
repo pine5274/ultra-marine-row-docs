@@ -14,7 +14,7 @@ Newt's starter
 
 **newt-docs-starter-nextjs**
 <br />Newtを利用したドキュメントサイト
-<br />技術構成： Nuxt.js, JavaScript
+<br />技術構成： Next.js, TypeScript
 
 ## 開発をはじめる
 
@@ -92,17 +92,26 @@ $ yarn start
 
 ### Article（`uid: article`）モデル
 
-| フィールドID | フィールド名 | フィールドID	フィールド名 | フィールドID	フィールド名 |
+| フィールドID | フィールド名 | フィールドタイプ |オプション |
 | --- | --- | --- | --- |
 | title | タイトル | テキスト | 必須フィールド, このフィールドをタイトルに使う |
 | slug | スラッグ | テキスト | 必須フィールド |
+| meta | メタ情報 | カスタムフィールド | |
 | body | 本文 | Markdown or リッチテキスト |  |
 | category | カテゴリ | 参照（Categoryモデル） | |
 | sortOrder | 順番（昇順） | 数字 |  |
 
 ### Category（`uid: category`）モデル
 
-| フィールドID | フィールド名 | フィールドID	フィールド名 | フィールドID	フィールド名 |
+| フィールドID | フィールド名 | フィールドタイプ | オプション |
 | --- | --- | --- | --- |
 | name | 名前 | テキスト | 必須フィールド, このフィールドをタイトルに使う |
 | sortOrder | 順番（昇順） | 数字 | |
+
+### メタ情報（`id: META`）カスタムフィールドタイプ
+
+| フィールドID | フィールド名 | フィールドタイプ | オプション |
+| --- | --- | --- | --- |
+| title | Title | テキスト | |
+| description | Description | テキスト | |
+| ogImage | OG画像 | 画像 |  |
