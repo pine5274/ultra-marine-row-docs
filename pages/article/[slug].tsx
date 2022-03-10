@@ -53,6 +53,13 @@ export default function ArticlePage({
     return "";
   }, [app, meta, currentArticle?.body]);
 
+  const ogImage = useMemo(() => {
+    if (meta?.ogImage?.src) {
+      return meta.ogImage.src;
+    }
+    return "";
+  }, [meta]);
+
   const body = useMemo(() => {
     if (currentArticle?.body) {
       return {
@@ -74,6 +81,11 @@ export default function ArticlePage({
       <Head>
         <title>{title}</title>
         <meta name="description" content={description} />
+        <meta property="og:type" content="article" />
+        <meta property="og:title" content={title} />
+        <meta property="og:description" content={description} />
+        <meta property="og:image" content={ogImage} />
+        <meta name="twitter:card" content="summary_large_image" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <article className={styles.Article}>
